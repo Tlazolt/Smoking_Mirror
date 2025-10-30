@@ -1,0 +1,448 @@
+import React, { useMemo, useState } from "react";
+import { motion } from "framer-motion";
+import {
+  Camera,
+  Map as MapIcon,
+  Wrench,
+  Gem,
+  Database,
+  Github,
+  Linkedin,
+  Mail,
+  Phone,
+  ExternalLink,
+  Filter,
+  Search,
+  Download,
+  MapPin,
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+
+/**
+ * Smoking Mirror LLC — Single-file portfolio starter
+ * Tech: React + Tailwind + shadcn/ui + framer-motion + lucide-react
+ *
+ * How to use:
+ * 1) Replace placeholder text, links, and images below.
+ * 2) Add your real project links (GitHub, YouTube, ArcGIS Online, drone maps, etc.).
+ * 3) Deploy on Vercel/Netlify/GitHub Pages.
+ */
+
+const SERVICES = [
+  {
+    icon: Camera,
+    title: "UAS: Aerial Imaging & 360 Tours",
+    blurb:
+      "FAA Part 107. Orthomosaics, inspections, marketing footage, and immersive 360° tours.",
+    tags: ["UAS", "Aerial", "360"],
+  },
+  {
+    icon: MapIcon,
+    title: "GIS & Wildfire Mapping",
+    blurb:
+      "Vector workflows, field data (Avenza/Collector), hazard mapping, and cartographic products.",
+    tags: ["GIS", "Wildfire", "Cartography"],
+  },
+  {
+    icon: Wrench,
+    title: "CNC & Woodworking",
+    blurb:
+      "Custom signage, small-batch fabrication, and prototype fixtures using the Genmitsu 3018 Pro.",
+    tags: ["CNC", "Wood"],
+  },
+  {
+    icon: Gem,
+    title: "Jewelry & Metals",
+    blurb:
+      "Silver/bronze pieces, patinas, and small-run collections; repair and custom commissions.",
+    tags: ["Jewelry", "Metal"],
+  },
+  {
+    icon: Database,
+    title: "Data Science",
+    blurb:
+      "ETL, exploratory analyses, dashboards, and reproducible notebooks for real-world datasets.",
+    tags: ["Data", "Analytics"],
+  },
+];
+
+const PROJECTS = [
+  {
+    title: "Post-Fire Hazard Tree Map (Oregon)",
+    role: "GIS | Wildfire",
+    tags: ["GIS", "Wildfire", "Vector"],
+    image:
+      "https://images.unsplash.com/photo-1519681393784-d120267933ba?q=80&w=1600&auto=format&fit=crop",
+    summary:
+      "Vector-only workflow for hazard tree assessment; Survey123 schema, symbology, and permit-ready map export.",
+    links: [
+      { label: "Overview", href: "#" },
+      { label: "PDF Map", href: "#" },
+    ],
+  },
+  {
+    title: "Downtown Drone Orthomosaic",
+    role: "UAS | Mapping",
+    tags: ["UAS", "Aerial", "Photogrammetry"],
+    image:
+      "https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?q=80&w=1600&auto=format&fit=crop",
+    summary:
+      "Mini 4 Pro capture, GCP-light workflow, stitched orthomosaic suitable for planning and promo.",
+    links: [
+      { label: "Demo", href: "#" },
+      { label: "YouTube", href: "#" },
+    ],
+  },
+  {
+    title: "Silver + Juniper Inlay Pendant",
+    role: "Jewelry",
+    tags: ["Jewelry", "Metal"],
+    image:
+      "https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?q=80&w=1600&auto=format&fit=crop",
+    summary:
+      "Nature-inspired pendant with botanical inlay; custom patina and chain length options.",
+    links: [
+      { label: "Gallery", href: "#" },
+      { label: "Shop", href: "#" },
+    ],
+  },
+  {
+    title: "Timber Framing Fixtures",
+    role: "CNC | Wood",
+    tags: ["CNC", "Wood"],
+    image:
+      "https://images.unsplash.com/photo-1519710164239-da123dc03ef4?q=80&w=1600&auto=format&fit=crop",
+    summary:
+      "CNC-cut jigs for mortise-and-tenon workflows; repeatable accuracy for small shops.",
+    links: [
+      { label: "Build Notes", href: "#" },
+    ],
+  },
+  {
+    title: "Migration & Labor: EDA + Dashboard",
+    role: "Data Science",
+    tags: ["Data", "Analytics"],
+    image:
+      "https://images.unsplash.com/photo-1517180102446-f3ece451e9d8?q=80&w=1600&auto=format&fit=crop",
+    summary:
+      "Reproducible EDA with tidy data, bivariate visuals, and a lightweight web dashboard.",
+    links: [
+      { label: "Repo", href: "#" },
+      { label: "Report", href: "#" },
+    ],
+  },
+];
+
+const TAGS = Array.from(
+  new Set(PROJECTS.flatMap((p) => p.tags)).add("All")
+).sort();
+
+export default function SmokingMirrorPortfolio() {
+  const [activeTag, setActiveTag] = useState("All");
+  const [query, setQuery] = useState("");
+
+  const visibleProjects = useMemo(() => {
+    return PROJECTS.filter((p) => {
+      const matchesTag = activeTag === "All" || p.tags.includes(activeTag);
+      const q = query.trim().toLowerCase();
+      const matchesQuery = !q ||
+        p.title.toLowerCase().includes(q) ||
+        p.role.toLowerCase().includes(q) ||
+        p.summary.toLowerCase().includes(q) ||
+        p.tags.join(" ").toLowerCase().includes(q);
+      return matchesTag && matchesQuery;
+    });
+  }, [activeTag, query]);
+
+  return (
+    <div className="min-h-screen bg-neutral-50 text-neutral-900">
+      {/* NAV */}
+      <header className="sticky top-0 z-40 backdrop-blur bg-white/70 border-b border-neutral-200">
+        <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
+          <a href="#home" className="font-bold text-xl tracking-tight">
+            Smoking Mirror LLC
+          </a>
+          <nav className="hidden md:flex gap-6 text-sm">
+            <a href="#services" className="hover:opacity-80">Services</a>
+            <a href="#projects" className="hover:opacity-80">Projects</a>
+            <a href="#about" className="hover:opacity-80">About</a>
+            <a href="#contact" className="hover:opacity-80">Contact</a>
+          </nav>
+          <div className="flex gap-2">
+            <Button asChild className="rounded-2xl">
+              <a href="#contact">Get a Quote</a>
+            </Button>
+          </div>
+        </div>
+      </header>
+
+      {/* HERO */}
+      <section id="home" className="relative overflow-hidden">
+        <div className="max-w-6xl mx-auto px-4 py-20 grid md:grid-cols-2 gap-10 items-center">
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
+            <h1 className="text-4xl md:text-5xl font-extrabold leading-tight">
+              Aerial maps, data, and craft—
+              <span className="block text-neutral-500">from Oregon to the field.</span>
+            </h1>
+            <p className="mt-4 text-neutral-700">
+              We blend <strong>UAS imaging</strong>, <strong>GIS</strong>, and <strong>hands-on fabrication</strong> to solve real problems for
+              crews, shops, and organizations.
+            </p>
+            <div className="mt-6 flex gap-3">
+              <Button asChild>
+                <a href="#projects">See Work</a>
+              </Button>
+              <Button variant="outline" asChild>
+                <a href="#contact">Contact</a>
+              </Button>
+              <Button variant="ghost" asChild>
+                <a href="#resume" className="inline-flex items-center gap-2"><Download className="h-4 w-4"/> Resume</a>
+              </Button>
+            </div>
+            <div className="mt-6 flex flex-wrap gap-3 text-sm text-neutral-600">
+              <Badge variant="secondary">FAA Part 107</Badge>
+              <Badge variant="secondary">FFT2 Sawyer 3</Badge>
+              <Badge variant="secondary">PSU Data Science</Badge>
+              <Badge variant="secondary">Insured</Badge>
+            </div>
+          </motion.div>
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.1 }}>
+            <Card className="rounded-2xl border-neutral-200 shadow-sm">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <MapPin className="h-5 w-5"/> Recent Work Highlights
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="grid gap-3">
+                {PROJECTS.slice(0, 3).map((p) => (
+                  <div key={p.title} className="flex gap-3">
+                    <img src={p.image} alt="" className="w-24 h-24 rounded-xl object-cover"/>
+                    <div>
+                      <div className="font-semibold leading-tight">{p.title}</div>
+                      <div className="text-sm text-neutral-600">{p.role}</div>
+                      <div className="mt-1 flex gap-2 flex-wrap">
+                        {p.tags.slice(0,3).map(t => (
+                          <Badge key={t} variant="outline">{t}</Badge>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </CardContent>
+            </Card>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* SERVICES */}
+      <section id="services" className="bg-white border-y border-neutral-200">
+        <div className="max-w-6xl mx-auto px-4 py-16">
+          <h2 className="text-3xl font-bold">Services</h2>
+          <p className="mt-2 text-neutral-700">Pick the lane—or mix and match. Quotes within 24 hours.</p>
+          <div className="mt-8 grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {SERVICES.map((s) => (
+              <Card key={s.title} className="rounded-2xl border-neutral-200 hover:shadow-md transition">
+                <CardHeader>
+                  <div className="flex items-center gap-3">
+                    <s.icon className="h-6 w-6"/>
+                    <CardTitle className="text-lg">{s.title}</CardTitle>
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-neutral-700">{s.blurb}</p>
+                  <div className="mt-3 flex gap-2 flex-wrap">
+                    {s.tags.map((t) => (
+                      <Badge key={t} variant="outline">{t}</Badge>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* PROJECTS */}
+      <section id="projects" className="bg-neutral-50">
+        <div className="max-w-6xl mx-auto px-4 py-16">
+          <div className="flex items-end justify-between gap-4 flex-wrap">
+            <div>
+              <h2 className="text-3xl font-bold">Projects</h2>
+              <p className="mt-2 text-neutral-700">A rotating mix of maps, flights, builds, and analyses.</p>
+            </div>
+            <div className="flex items-center gap-2 w-full sm:w-auto">
+              <div className="relative w-full sm:w-64">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-neutral-400"/>
+                <Input
+                  value={query}
+                  onChange={(e) => setQuery(e.target.value)}
+                  placeholder="Search projects…"
+                  className="pl-9 rounded-2xl"
+                />
+              </div>
+              <div className="relative">
+                <Filter className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-neutral-400"/>
+                <select
+                  value={activeTag}
+                  onChange={(e) => setActiveTag(e.target.value)}
+                  className="appearance-none bg-white pl-9 pr-10 py-2 rounded-2xl border border-neutral-300 text-sm"
+                >
+                  {TAGS.map((t) => (
+                    <option key={t} value={t}>{t}</option>
+                  ))}
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-8 grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {visibleProjects.map((p) => (
+              <motion.div key={p.title} initial={{ opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
+                <Card className="rounded-2xl overflow-hidden border-neutral-200 hover:shadow-md transition group">
+                  <div className="aspect-[4/3] overflow-hidden">
+                    <img src={p.image} alt="" className="w-full h-full object-cover group-hover:scale-105 transition"/>
+                  </div>
+                  <CardHeader className="pb-0">
+                    <CardTitle className="text-lg">{p.title}</CardTitle>
+                    <div className="text-sm text-neutral-600">{p.role}</div>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-neutral-700">{p.summary}</p>
+                    <div className="mt-3 flex gap-2 flex-wrap">
+                      {p.tags.map((t) => (
+                        <Badge key={t} variant="outline">{t}</Badge>
+                      ))}
+                    </div>
+                    <div className="mt-4 flex gap-3 flex-wrap">
+                      {p.links.map((l) => (
+                        <Button key={l.label} variant="outline" size="sm" asChild>
+                          <a href={l.href} className="inline-flex items-center gap-1">
+                            <ExternalLink className="h-3.5 w-3.5"/> {l.label}
+                          </a>
+                        </Button>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ABOUT */}
+      <section id="about" className="bg-white border-y border-neutral-200">
+        <div className="max-w-6xl mx-auto px-4 py-16 grid md:grid-cols-2 gap-10 items-center">
+          <div>
+            <h2 className="text-3xl font-bold">About</h2>
+            <p className="mt-3 text-neutral-700">
+              I’m <strong>Dunc Law</strong>, founder of Smoking Mirror LLC—combining wildland fire fieldwork, UAS imaging,
+              GIS mapping, and maker craft. Based in Oregon; available across the PNW and beyond.
+            </p>
+            <ul className="mt-4 text-neutral-700 list-disc list-inside space-y-1">
+              <li>FFT2, Sawyer 3 (Class C Faller)</li>
+              <li>FAA Part 107 Remote Pilot</li>
+              <li>BS in Data Science (in progress), Portland State University</li>
+            </ul>
+            <div className="mt-6 flex gap-3">
+              <Button variant="outline" asChild>
+                <a href="#resume"><Download className="h-4 w-4"/> Download Resume (PDF)</a>
+              </Button>
+              <Button variant="ghost" asChild>
+                <a href="https://github.com/" target="_blank" rel="noreferrer" className="inline-flex items-center gap-2"><Github className="h-4 w-4"/> GitHub</a>
+              </Button>
+              <Button variant="ghost" asChild>
+                <a href="https://www.linkedin.com/" target="_blank" rel="noreferrer" className="inline-flex items-center gap-2"><Linkedin className="h-4 w-4"/> LinkedIn</a>
+              </Button>
+            </div>
+          </div>
+          <div>
+            <Card className="rounded-2xl border-neutral-200">
+              <CardHeader>
+                <CardTitle>Capabilities</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="grid sm:grid-cols-2 gap-3 text-sm">
+                  <div>
+                    <div className="font-semibold">UAS</div>
+                    <p className="text-neutral-700">Flight planning, LAANC, ops checklists, post-processing.</p>
+                  </div>
+                  <div>
+                    <div className="font-semibold">GIS</div>
+                    <p className="text-neutral-700">Vector toolchains, field apps, symbology, map exports.</p>
+                  </div>
+                  <div>
+                    <div className="font-semibold">Data</div>
+                    <p className="text-neutral-700">Pandas, SQL, charts, and clean storytelling with data.</p>
+                  </div>
+                  <div>
+                    <div className="font-semibold">Fabrication</div>
+                    <p className="text-neutral-700">CNC jigs/fixtures, signage, and small-run craft goods.</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </section>
+
+      {/* CONTACT */}
+      <section id="contact" className="bg-neutral-50">
+        <div className="max-w-6xl mx-auto px-4 py-16">
+          <h2 className="text-3xl font-bold">Let’s work</h2>
+          <p className="mt-2 text-neutral-700">Tell me a bit about your project—timeline, location, and goals.</p>
+
+          <div className="mt-8 grid md:grid-cols-5 gap-6">
+            <Card className="md:col-span-3 rounded-2xl border-neutral-200">
+              <CardContent className="pt-6 space-y-3">
+                <div className="grid sm:grid-cols-2 gap-3">
+                  <Input placeholder="Name" className="rounded-2xl"/>
+                  <Input placeholder="Email" className="rounded-2xl"/>
+                </div>
+                <Input placeholder="Project / Subject" className="rounded-2xl"/>
+                <Textarea placeholder="Brief description (scope, location, date)…" className="min-h-[120px] rounded-2xl"/>
+                <div className="flex gap-3">
+                  <Button>Send Inquiry</Button>
+                  <Button variant="outline">Download Rate Sheet</Button>
+                </div>
+              </CardContent>
+            </Card>
+
+            <div className="md:col-span-2 grid gap-3 content-start">
+              <Card className="rounded-2xl border-neutral-200">
+                <CardContent className="pt-6 space-y-3 text-sm">
+                  <div className="flex items-center gap-2"><Mail className="h-4 w-4"/> hello@smokingmirror.example</div>
+                  <div className="flex items-center gap-2"><Phone className="h-4 w-4"/> (555) 123-4567</div>
+                  <div className="flex items-center gap-2"><MapPin className="h-4 w-4"/> Oregon, USA</div>
+                </CardContent>
+              </Card>
+              <Card className="rounded-2xl border-neutral-200">
+                <CardHeader>
+                  <CardTitle>Availability</CardTitle>
+                </CardHeader>
+                <CardContent className="text-sm text-neutral-700">
+                  Typical lead time: <strong>1–2 weeks</strong>. Rush slots available for field work.
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* FOOTER */}
+      <footer className="border-t border-neutral-200 bg-white">
+        <div className="max-w-6xl mx-auto px-4 py-10 text-sm text-neutral-600 flex flex-col md:flex-row items-center justify-between gap-4">
+          <div>© {new Date().getFullYear()} Smoking Mirror LLC — All rights reserved.</div>
+          <div className="flex gap-4">
+            <a href="https://github.com/" target="_blank" rel="noreferrer" className="inline-flex items-center gap-1"><Github className="h-4 w-4"/> GitHub</a>
+            <a href="https://www.linkedin.com/" target="_blank" rel="noreferrer" className="inline-flex items-center gap-1"><Linkedin className="h-4 w-4"/> LinkedIn</a>
+          </div>
+        </div>
+      </footer>
+    </div>
+  );
+}
